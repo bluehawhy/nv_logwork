@@ -1,8 +1,8 @@
 # Hidden directory on Windows (no dot)
-config.json
 __pycache__/
-.xlsx
-static/template/
+
+config.json
+*.xlsx
 template/readMe/
 *.log
 output.txt
