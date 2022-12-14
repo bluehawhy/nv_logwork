@@ -1,0 +1,42 @@
+QGroupBox {
+  border: 1px solid gray;
+  font-family: "Lucida Console";
+  border-radius: 9px;
+  margin-top: 0.5em;
+}
+
+QLineEdit {
+   font-family: "Lucida Console";
+   color: #618b38;
+}
+
+
+QTextBrowser {
+   font-family: "Lucida Console";
+   color: #003399;
+}
+
+
+QLabel {
+    color: black;
+    selection-color: yellow;
+    font-family: "Lucida Console";
+    selection-background-color: blue;
+}
+
+QPushButton {
+    font-family: "Lucida Console";
+    font-size: 10px;
+    height: 40px;
+    width: 40px;
+}
+
+QProgressBar {
+    border: "2px solid grey";
+    border-radius: 5px;
+}
+
+QProgressBar::chunk {
+    background-color: #05B8CC;
+    width: 20px;
+}
