@@ -1,8 +1,8 @@
 # Hidden directory on Windows (no dot)
 config.json
 __pycache__/
-output.txt
 .xlsx
 static/template/
 template/readMe/
-_logs/*.log
+*.log
+output.txt
