@@ -1,5 +1,6 @@
 # Hidden directory on Windows (no dot)
 config.json
 __pycache__/
-*.log
+.log
 output.txt
+.xlsx
