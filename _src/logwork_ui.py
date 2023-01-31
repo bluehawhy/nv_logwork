@@ -12,8 +12,8 @@ from PyQt5.QtGui import QTextCursor
 from datetime import date
 
 
-from _src._api import filepath, logger, rest, config, logging_message
-from _src import logwork_import, license_key, logwork_refer
+from _src._api import filepath, logger, rest, config, logging_message, license_key
+from _src import logwork_import, logwork_refer
 
 logging = logger.logger
 logging_file_name = logger.log_full_name
