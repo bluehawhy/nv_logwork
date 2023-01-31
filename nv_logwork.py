@@ -1,8 +1,8 @@
 import os, sys
 from PyQt5.QtWidgets import QApplication
 
-from _src._api import logger, rest, logging_message
-from _src import logwork_ui, license_key, logwork_import, logwork_refer
+from _src._api import logger, rest, logging_message, license_key
+from _src import logwork_ui, logwork_import, logwork_refer
 
 logging= logger.logger
 logging_file_name = logger.log_full_name
@@ -25,14 +25,7 @@ revision_list=[
 
 
 def debug_app():
-    lineEdit_user = 'miskang'
-    lineEdit_password = '---'
-    session = rest.initsession(lineEdit_user, lineEdit_password)
-    rest_handler=rest.Handler_Jira(session[0])
-    #folderpath = r'C:/Users/miskang/Desktop/'
-    file = r'C:\Users\miskang\Downloads\logwork_v3.2_name.xlsx'
-    logwork_import.createTask(rest_handler, file)
-    logwork_import.importLogwork(rest_handler, file)
+    pass
 
 def start_app():
     message_path = logwork_refer.message_path
@@ -41,7 +34,7 @@ def start_app():
     for revision in revision_list:
         logging_message.input_message(path = message_path,message = revision)
     app = QApplication(sys.argv)
-    ex = logwork_ui.MyMainWindow(license_key.chekcLicense(),version)
+    ex = logwork_ui.MyMainWindow(license_key.check_License(),version)
     sys.exit(app.exec_())
 
 if __name__ =='__main__':
