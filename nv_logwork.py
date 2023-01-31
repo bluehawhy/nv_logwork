@@ -32,7 +32,7 @@ def start_app():
     logging_message.remove_message(message_path)
     logging_message.input_message(path = message_path,message = version)
     for revision in revision_list:
-        logging_message.input_message(path = message_path,message = revision)
+        logging_message.input_message(path = message_path,message = revision,settime=False)
     app = QApplication(sys.argv)
     ex = logwork_ui.MyMainWindow(license_key.check_License(),version)
     sys.exit(app.exec_())
