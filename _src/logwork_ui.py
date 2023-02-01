@@ -1,7 +1,5 @@
 #!/usr/bin/python
 import os
-import sys
-import time
 import threading
 
 
@@ -9,7 +7,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import  Qt, pyqtSlot, QTimer, QTime
 from PyQt5.QtGui import QTextCursor
 
-from _src._api import filepath, logger, config, logging_message, jira_rest
+from _src._api import logger, config, logging_message, jira_rest
 from _src import logwork_import, logwork_refer
 
 logging = logger.logger
@@ -29,7 +27,6 @@ logging.debug('config_path is %s' %config_path)
 class MyMainWindow(QMainWindow):
     def __init__(self,title):
         super().__init__()
-        self.license = license
         self.title = title
         self.setStyleSheet(open(qss_path, "r").read())
         self.initUI()

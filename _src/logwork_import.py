@@ -159,6 +159,7 @@ def importLogwork(rh, file):
     # init
     username = rh.getusername()
     logging_message.input_message(path = message_path,message = ' ========== update logwork========== ')
+    logging_message.input_message(path = message_path,message = 'start for logwork')
     wb = excel.Workbook(file,read_only=False,data_only=False)
     if 'logwork' in wb.get_sheet_list():
         # ===========================make task in MakeTask sheet===============================
@@ -188,7 +189,6 @@ def importLogwork(rh, file):
                 pass
             else:
                 logwork_playloads = playload.make_playload(logwork_excel_data,config_data['logwork_type'])['input_playload']
-                logging_message.input_message(path = message_path,message = 'start for logwork ')
                 logging_message.input_message(path = message_path,message = f"{logwork_excel_data['summary']}")
                 def find_logwork_info(summary,logwork_time):
                     logwork_info = {}
