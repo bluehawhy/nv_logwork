@@ -36,7 +36,6 @@ headers = {
 
 def initsession(username, password):
     logging.info("start log in from rest.py")
-
     # Create Session
     logging.debug("make session")
     s = requests.Session()
@@ -107,13 +106,13 @@ class Handler_Jira():
         # ============= init =====================
         self.url = jira_url+'/rest/api/2/issue'
         self.payload = payloads
-        logging.debug(self.payload)
+        #logging.debug(self.payload)
         self.response = self.session.post(self.url, data=playload.makeplayload(self.payload), headers=headers,
                                           timeout=10.0)
-        self.code = self.response.status_code
-        self.info = json.loads(self.response.text)
-        logging.debug('code :%s' % self.code)
-        logging.debug('info :%s' % self.info)
+        #self.code = self.response.status_code
+        #self.info = json.loads(self.response.text)
+        #logging.debug('code :%s' % self.code)
+        #logging.debug('info :%s' % self.info)
         return self.response
 
     def updateissue(self, key, payloads):
@@ -125,7 +124,7 @@ class Handler_Jira():
         # logging.debug("update url: %s" %self.url)
         self.response = self.session.put(self.url, data=playload.makeplayload(self.payload), headers=headers,
                                          timeout=10.0)
-        logging.debug(self.response.text)
+        #logging.debug(self.response.text)
         logging.debug("Done: %s and code: %s" % (self.key, self.response.status_code))
         return self.response
 
