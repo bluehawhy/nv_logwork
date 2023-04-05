@@ -23,4 +23,4 @@ def load_config(filename):
 def save_config(json_dict,filename):
     with open(filename, 'w', encoding='utf-8') as jsonFile:
         json.dump(json_dict, jsonFile,ensure_ascii=False, indent ='\t')
-    return None
+    return json_dict
