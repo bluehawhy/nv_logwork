@@ -67,7 +67,10 @@ class Workbook(object):
         return 0
 
     def save_workbook(self, file):
-        self.wb.save(file)
+        try:
+            self.wb.save(file)
+        except PermissionError:
+            self.wb.save(str(file).replace('.xlsx','_temp.xlsx'))
         return 0
 
     def close_workbook(self):
