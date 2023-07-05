@@ -31,7 +31,7 @@ revision_list=[
 
 
 def debug_app():
-    lineEdit_user = '---'
+    lineEdit_user = ''
     lineEdit_password = '--1'
     session,session_info = jira_rest.initsession(lineEdit_user, lineEdit_password)
     rest_handler=jira_rest.Handler_Jira(session)
