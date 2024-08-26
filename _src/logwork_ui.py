@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os
+import os, sys
 import threading
 
 
@@ -7,18 +7,30 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import  Qt, pyqtSlot, QTimer, QTime
 from PyQt5.QtGui import QTextCursor
 
-from _src._api import logger, config, logging_message, jira_rest
-from _src import logwork_import, logwork_refer
+from _src import logwork_import
 
-logging = logger.logger
-logging_file_name = logger.log_full_name
+refer_api = "local"
+refer_api = "global"
+
+if refer_api == "global":
+    sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))
+    from _api import zyra, loggas, configus
+if refer_api == "local":
+    from _src._api import zyra, loggas, configus
+
+
+
+logging = loggas.logger
+logging_file_name = loggas.log_full_name
 
 
 #set config
-message_path = logwork_refer.message_path
-config_path = logwork_refer.config_path
-qss_path = logwork_refer.qss_path
-config_data =config.load_config(config_path)
+
+message_path = '_logs\output.txt'
+config_path = os.path.join('static','config','config.json')
+qss_path = os.path.join('static','css','style.qss')
+
+config_data =configus.load_config(config_path)
 
 
 logging.debug('qss_path is %s' %qss_path)
@@ -51,15 +63,14 @@ class FormWidget(QWidget):
         self.file_path = None
         self.user = config_data['id']
         self.password = config_data['password']
-        self.current_project = config_data['current_project']
         self.statusbar = statusbar
         self.initUI() 
         self.show()
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.thread_ui)
         self.timer.start(1000)
-        logging_message.input_message(path = message_path,message = 'welcome to %s! :D' %self.user)
-        logging_message.input_message(path = message_path,message = 'current not login, start login')    
+        loggas.input_message(path = message_path,message = 'welcome to %s! :D' %self.user)
+        loggas.input_message(path = message_path,message = 'current not login, start login')    
 
     def initUI(self):
         self.setStyleSheet(open(qss_path, "r").read())
@@ -91,26 +102,12 @@ class FormWidget(QWidget):
         self.login_layout_id_pw.addWidget(self.line_password, 2, 2)
         self.login_layout.addLayout(self.login_layout_id_pw)
         self.login_layout.addWidget(self.login_import_button)
-
-        #add radiobutton
-        self.radio_button_group =[]
-        for project in config_data['project_list']:
-            self.radiobutton = QRadioButton(project)
-            self.radio_button_group.append(self.radiobutton)
-            self.radiobutton.project = project
-            if project == self.current_project:
-                self.radiobutton.setChecked(True)
-            self.radiobutton.toggled.connect(self.on_project_clicked)
-            self.layout_project.addWidget(self.radiobutton)
         
         # add log layout
         self.qtext_log_browser = QTextBrowser()
         self.qtext_log_browser.setReadOnly(1)
         self.log_layout.addWidget(self.qtext_log_browser)
         
-
-
-
         #add layout line
         self.layout_main.addLayout(self.layout_project)
         self.layout_main.addLayout(self.login_layout)
@@ -119,17 +116,15 @@ class FormWidget(QWidget):
         #events
         self.login_import_button.clicked.connect(self.on_start)
         self.line_password.returnPressed.connect(self.on_start)
-        self.radiobutton.toggled.connect(self.on_project_clicked)
-
 
     # add event list
     def open_fileName_dialog(self):
         set_dir = config_data['last_file_path']
         if set_dir == '':
             set_dir = os.path.join(os.path.expanduser('~'),'Desktop')
-            logging_message.input_message(path = message_path,message = 'folder path is %s' %set_dir)
+            loggas.input_message(path = message_path,message = 'folder path is %s' %set_dir)
         else:
-            logging_message.input_message(path = message_path,message = 'folder path is %s' %set_dir)
+            loggas.input_message(path = message_path,message = 'folder path is %s' %set_dir)
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         file_name, _ = QFileDialog.getOpenFileName(self,  "Open Logwork", set_dir, "Excel Files (*.xlsx)",options=options)
@@ -141,32 +136,20 @@ class FormWidget(QWidget):
         logging.debug('folder path is %s' %folder_path)
         config_data['last_file_path']=folder_path
         #logging.debug(config_data)
-        config.save_config(config_data,config_path)
+        configus.save_config(config_data,config_path)
         return file_name
-
-
-    def on_project_clicked(self):
-        radioButton = self.sender()
-        if radioButton.isChecked():
-            logging.debug("project is %s" % (radioButton.project))
-            self.current_project = radioButton.project
-            logging_message.input_message(path = message_path, message = '%s is selected' %(self.current_project))
-            config_data['current_project']=self.current_project
-            config.save_config(config_data,config_path)
-        return 0
-
 
     def try_login(self):
         self.session = None
         self.session_info = None
         self.user = self.line_id.text()
         self.password = self.line_password.text()
-        logging.info('user: %s password: %s' %(self.user,self.password))
-        self.session, self.session_info = jira_rest.initsession(self.user, self.password)
+        logging.info(f'user: {self.user} password: password')
+        self.session, self.session_info, self.status_login = zyra.initsession(self.user, self.password, jira_url=config_data['jira_url'])
         #fail to login
-        if self.session_info == None:
-            logging_message.input_message(path = message_path,message = "Login Fail")
-            logging_message.input_message(path = message_path,message = "please check your id and password or check internet connection")
+        if self.status_login == False:
+            loggas.input_message(path = message_path,message = "Login Fail")
+            loggas.input_message(path = message_path,message = "please check your id and password or check internet connection")
             QMessageBox.about(self, "Login Fail", "please check your id and password or check internet connection")
         #if loggin success
         else:
@@ -176,37 +159,34 @@ class FormWidget(QWidget):
             #save config
             config_data['id'] = self.user
             config_data['password'] = self.password
-            config.save_config(config_data,config_path)
-            logging_message.input_message(path = message_path,message = 'login succeed, please start logwork import~!')
+            configus.save_config(config_data,config_path)
+            loggas.input_message(path = message_path,message = 'login succeed, please start logwork import~!')
 
             #disable qtext and radiobutton
             self.line_id.setReadOnly(1)
             self.line_password.setReadOnly(1)
-            for self.radio_button in self.radio_button_group:
-                self.radio_button.setEnabled(False)
         return 0
-
 
     def create_tasks(self):
         self.login_import_button.setEnabled(False)
         if os.path.splitext(self.file_path)[1] == '.xlsx':
-            self.rest_handler = jira_rest.Handler_Jira(self.session)
+            self.rest_handler = zyra.Handler_Jira(self.session, jira_url=config_data['jira_url'])
             try:
-                logwork_import.createTask(self.rest_handler, self.file_path,f'{self.current_project}_makeTask')
+                logwork_import.createTask(self.rest_handler, self.file_path,'makeTask')
             except ValueError:
-                logging_message.input_message(path = message_path,message = "wrong value input in your task sheet.")
-                logging_message.input_message(path = message_path,message = "please check your excel sheet.")
+                loggas.input_message(path = message_path,message = "wrong value input in your task sheet.")
+                loggas.input_message(path = message_path,message = "please check your excel sheet.")
         self.login_import_button.setEnabled(True)
         return 0
     
     def import_logworks(self):
         self.login_import_button.setEnabled(False)
-        self.rest_handler = jira_rest.Handler_Jira(self.session)
+        self.rest_handler = zyra.Handler_Jira(self.session, jira_url=config_data['jira_url'])
         try:
             logwork_import.importLogwork(self.rest_handler, self.file_path)
         except ValueError:
-            logging_message.input_message(path = message_path,message = "wrong value input in your logwork sheet.")
-            logging_message.input_message(path = message_path,message = "please check your excel sheet.")
+            loggas.input_message(path = message_path,message = "wrong value input in your logwork sheet.")
+            loggas.input_message(path = message_path,message = "please check your excel sheet.")
         self.login_import_button.setEnabled(True)
         return 0
 
@@ -216,12 +196,12 @@ class FormWidget(QWidget):
         if self.statusbar_status == 'not logged in':
             self.try_login()    
         else:
-            logging_message.input_message(path = message_path,message = 'logged in')
+            loggas.input_message(path = message_path,message = 'logged in')
             self.statusbar_status = 'logwork importing~'
             self.file_path = None
             self.file_path = self.open_fileName_dialog()
             if self.file_path is None:
-                logging_message.input_message(path = message_path,message = "plese select file")
+                loggas.input_message(path = message_path,message = "plese select file")
             else:
                 self.login_import_button.setEnabled(False)
                 def task_logwork():    

@@ -6,10 +6,14 @@ import os
 import sys
 import json
 
-from . import config, playload
+from . import configus
 
 def makeplayload(dic):
     data = json.dumps(dic,ensure_ascii=False).encode('utf8')
+    return data
+
+def make_json(str):
+    data = json.loads(str)
     return data
 
 def make_playload(dict_data,dict_config):
@@ -21,7 +25,7 @@ def make_playload(dict_data,dict_config):
             if data_key in dict_config.keys() :
                 str_playload = str(dict_config[data_key]).replace('field_input_value',dict_data[data_key]).replace('\n','\\r\\n')
                 temp_json = json.loads(str_playload)
-                playload.merge_playload(temp_payloads,temp_json)
+                merge_playload(temp_payloads,temp_json)
     return temp_payloads
 
 def merge_playload(a, b, path=None):

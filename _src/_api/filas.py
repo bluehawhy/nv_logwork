@@ -3,17 +3,14 @@
 # -*- coding: utf-8 -*-
 
 '''
-Created on 2019. 01. 27.
+Created on 2018. 11. 15.
+release note
+2022-11-25 : set release note.
+
 @author: miskang
 
-How to get file path
-variable
-mainpath -> rootpath from project
-filepath -> a path which a script working
-project_name -> project folder name
-currntfile -> a file name which a script working
-nowdatetime = current date and time
 '''
+
 import os
 import sys
 import platform

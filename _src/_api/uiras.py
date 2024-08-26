@@ -1,12 +1,23 @@
-#!/usr/bin/python
+# rest.py
+# !/usr/bin/python
+# -*- coding: utf-8 -*-
+'''
+Created on 2018. 11. 15.
+release note
+2022-11-25 : set release note.
+
+@author: miskang
+
+'''
+
 import os
 from PyQt5.QtWidgets import QFileDialog
 
-from _src._api import config
+from . import configus
 
 # add event list
 def open_fileName_dialog(title,config_path,logging):
-    config_data =config.load_config(config_path)
+    config_data =configus.load_config(config_path)
     set_dir = config_data['last_file_path']
     if set_dir == '':
         set_dir = os.path.join(os.path.expanduser('~'),'Desktop')
@@ -24,5 +35,5 @@ def open_fileName_dialog(title,config_path,logging):
     logging.debug('folder path is %s' %folder_path)
     config_data['last_file_path']=folder_path
     logging.debug(config_data)
-    config.save_config(config_data,config_path)
+    configus.save_config(config_data,config_path)
     return file_name

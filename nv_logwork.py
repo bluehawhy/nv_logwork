@@ -1,12 +1,26 @@
 import os, sys
 from PyQt5.QtWidgets import QApplication
 
-from _src._api import logger, logging_message, jira_rest
-from _src import logwork_ui, logwork_import, logwork_refer
+#add internal libary
+from _src import logwork_ui, logwork_import
+
+message_path = '_logs\output.txt'
+config_path = os.path.join('static','config','config.json')
+qss_path = os.path.join('static','css','style.qss')
 
 
-logging= logger.logger
-logging_file_name = logger.log_full_name
+refer_api = "local"
+refer_api = "global"
+
+if refer_api == "global":
+    sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))))
+    from _api import zyra, loggas, configus
+if refer_api == "local":
+    from _src._api import zyra, loggas,configus
+
+
+logging= loggas.logger
+logging_file_name = loggas.log_full_name
 
 version = 'logwork v4.0'
 revision_list=[
@@ -26,25 +40,27 @@ revision_list=[
     'v3.1 (2022-11-21) : save id and pw when logged in',
     'v4.0 (2023-01-31) : remove license function',
     '                    add custumcode - TASK_TYPE',
+    'v5.0 (2024-08-27) : change function',
     '==============================================='
     ]
 
 
 def debug_app():
-    lineEdit_user = ''
-    lineEdit_password = '--1'
-    session,session_info = jira_rest.initsession(lineEdit_user, lineEdit_password)
-    rest_handler=jira_rest.Handler_Jira(session)
-    #folderpath = r'C:/Users/miskang/Desktop/'
-    file = r'D:\Tool\Logwork\logwork_v3.7_miskang.xlsx'
-    logwork_import.createTask(rest_handler, file)
-    #logwork_import.importLogwork(rest_handler, file)
+    config_path = os.path.join('static','config','config.json')
+    config_data =configus.load_config(config_path)
+    lineEdit_user = config_data['id']
+    lineEdit_password = config_data['password']
+    session, session_info, status_login = zyra.initsession(lineEdit_user, lineEdit_password, jira_url=config_data['jira_url'])
+    rest_handler=zyra.Handler_Jira(session,jira_url=config_data['jira_url'])
+    file = r'D:\Tool\Logwork\logwork_v4.1_miskang.xlsx'
+    #logwork_import.createTask(rest_handler, file,  sheet_name='makeTask')
+    logwork_import.importLogwork(rest_handler, file)
+    return 0
 
 def start_app():
-    message_path = logwork_refer.message_path
-    logging_message.remove_message(message_path)
+    loggas.remove_message(message_path)
     for revision in revision_list:
-        logging_message.input_message(path = message_path,message = revision,settime=False)
+        loggas.input_message(path = message_path,message = revision,settime=False)
     app = QApplication(sys.argv)
     ex = logwork_ui.MyMainWindow(version)
     sys.exit(app.exec_())
