@@ -3,9 +3,9 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 #add internal libary
-from _src import logwork_ui, logwork_import
+from nv_logwork._src import _logwork_ui
 
-message_path = '_logs\output.txt'
+
 config_path = os.path.join('static','config','config.json')
 qss_path = os.path.join('static','css','style.qss')
 
@@ -13,7 +13,6 @@ from _src._api import zyra, loggas, configus
 
 
 logging= loggas.logger
-logging_file_name = loggas.log_full_name
 
 version = 'logwork v5.0'
 revision_list=[
@@ -45,19 +44,14 @@ def debug_app():
     lineEdit_user = config_data['id']
     lineEdit_password = config_data['password']
     session, session_info, status_login = zyra.initsession(lineEdit_user, lineEdit_password, jira_url=config_data['jira_url'])
-    rest_handler=zyra.Handler_Jira(session,jira_url=config_data['jira_url'])
-    file = r'C:\\Users\\miskang\\Downloads\\logwork_v5.1_요거사용했습니다_1.xlsx'
-    logwork_import.createTask(rest_handler, file,  sheet_name='makeTask')
-    #logwork_import.importLogwork(rest_handler, file)
     return 0
 
 def start_app():
-    loggas.remove_message(message_path)
-    for revision in revision_list:
-        loggas.input_message(path = message_path,message = revision,settime=False)
     app = QApplication(sys.argv)
-    logwork_ui.MyMainWindow(version)
-    sys.exit(app.exec_())
+    window = _logwork_ui.MyMainWindow(version)
+    window.show()
+    sys.exit(app.exec())
 
 if __name__ =='__main__':
+    loggas.set_debug_logging(True)
     debug_app()
