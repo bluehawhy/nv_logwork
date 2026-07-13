@@ -1,8 +1,9 @@
 # Hidden directory on Windows (no dot)
 __pycache__/
-
+static
 *.json
 *.xlsx
 template/readMe/
 *.log
 output.txt
+requirements.txt
