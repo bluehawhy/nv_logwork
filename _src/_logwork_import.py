@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 
-import os
-import sys
 import ast
 import datetime
 from pathlib import Path
-import loggas, excelium, configus
+from . import loggas, excelium, configus
 
 # 로거 및 기본 경로 설정 (Pathlib 활용으로 OS 간 호환성 확보)
 logging = loggas.logger

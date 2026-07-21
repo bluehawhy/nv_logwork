@@ -29,7 +29,7 @@ HEADERS = {
 }
 
 def initsession(username, password, jira_url=config_data['jira_url'], cert=None):
-    logging.debug("start log in from rest.py")
+    logging.info("start log in from rest.py")
     session = requests.Session()
     login_url = f"{jira_url}/rest/auth/1/session"
     payload = {"username": username, "password": password}
@@ -38,6 +38,7 @@ def initsession(username, password, jira_url=config_data['jira_url'], cert=None)
     try:
         logging.info("try log in")
         session_info = session.post(login_url, json=payload, headers=HEADERS, timeout=120, cert=cert)
+        logging.info(session_info)
         if session_info.status_code == 200:
             logging.debug("log in success!")
             status_login = True
